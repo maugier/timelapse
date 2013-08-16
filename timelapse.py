@@ -8,7 +8,7 @@ from irc.bot import SingleServerIRCBot
 
 # --- Log opened Fri May 25 12:56:23 2012
 header_open_line = re.compile(r'--- Log opened (.*)')
-header_date_format = "%a %b %d %H:%M:%S %Y"
+header_open_format = "%a %b %d %H:%M:%S %Y"
 # --- Day changed Sat Jun 02 2012
 header_change_line = re.compile(r'--- Day changed (.*)')
 header_change_format = "%a %b %d %Y"
@@ -33,9 +33,9 @@ def read_log(file):
            except UnicodeDecodeError:
              line = buf.decode('latin1')
 
-           m = header_line.match(line)
+           m = header_open_line.match(line)
            if m:
-             current_date = datetime.datetime.strptime(m.group(1), header_date_format)
+             current_date = datetime.datetime.strptime(m.group(1), header_open_format)
              yield (True, current_date)
 
            m = header_change_line.match(line)
@@ -45,7 +45,8 @@ def read_log(file):
             
            m = message_line.match(line)
            if m:
-             message_hour = datetime.datetime.strptime(m.group(1), message_date_format)
+             message_hour = datetime.datetime.combine(current_date.date(), 
+                datetime.datetime.strptime(m.group(1), message_date_format).time())
 
              if message_hour > current_date:
                 current_date = message_hour
@@ -118,6 +119,7 @@ class TimeLapse(SingleServerIRCBot):
         send_timed_stream(self.lapsed, self.connection, self.on_lapsed_message)
 
     def on_lapsed_message(self, msg):
+        logging.info("Lapsed message: {0}".format(msg))
         self.connection.privmsg(self.lapsed_channel, msg)
 
 
