@@ -1,12 +1,13 @@
 
-import re
 import datetime
+import re
+import sys
 
 # --- Log opened Fri May 25 12:56:23 2012
 header_line = re.compile(r'--- Log opened (.*)')
 header_date_format = "%a %b %d %H:%M:%S %Y"
 # 12:56 <%Gael> haha sympa comme vhost
-message_line = re.compile(r'(\d\d:\d\d) (<.[^>+]> .*)')
+message_line = re.compile(r'(\d\d:\d\d) (<.[^>]+> .*)')
 message_date_format = "%H:%M"
 
 
@@ -29,14 +30,13 @@ def read_log(file):
            m = message_line.match(line)
            if m:
              message_hour = datetime.datetime.strptime(m.group(1), message_date_format)
-             message_line = m.group(2)
 
              if message_hour > current_date:
                 current_date = message_hour
                 yield (True, current_date)
 
 
-             yield (False, message_line)
+             yield (False, m.group(2))
              
             
 
@@ -64,7 +64,7 @@ def interpolate(stream):
 
     for (t,v) in stream:
         if t:
-            if current_index is not None:
+            if current_index is not None and values_buffer:
                 delta = (v - current_index) / len(values_buffer)
                 for v2 in values_buffer:
                     yield (current_index, v2)
@@ -73,4 +73,9 @@ def interpolate(stream):
             current_index = v
 
         else:
-            values_buffer += v
+            values_buffer.append(v)
+
+
+if __name__ == "__main__":
+    for i in interpolate(read_log(sys.argv[1])):
+        print(i)
