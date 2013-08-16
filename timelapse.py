@@ -28,7 +28,10 @@ def read_log(file):
 
     with open(file, 'rb') as f:
         for buf in f:
-           line = buf.decode('utf-8', 'replace')
+           try: 
+             line = buf.decode('utf-8')
+           except UnicodeDecodeError:
+             line = buf.decode('latin1')
 
            m = header_line.match(line)
            if m:
