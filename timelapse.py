@@ -7,8 +7,11 @@ import sys
 from irc.bot import SingleServerIRCBot
 
 # --- Log opened Fri May 25 12:56:23 2012
-header_line = re.compile(r'--- Log opened (.*)')
+header_open_line = re.compile(r'--- Log opened (.*)')
 header_date_format = "%a %b %d %H:%M:%S %Y"
+# --- Day changed Sat Jun 02 2012
+header_change_line = re.compile(r'--- Day changed (.*)')
+header_change_format = "%a %b %d %Y"
 # 12:56 <%Gael> haha sympa comme vhost
 message_line = re.compile(r'(\d\d:\d\d) (<.[^>]+> .*)')
 message_date_format = "%H:%M"
@@ -26,9 +29,15 @@ def read_log(file):
     with open(file, 'rb') as f:
         for buf in f:
            line = buf.decode('utf-8', 'replace')
+
            m = header_line.match(line)
            if m:
              current_date = datetime.datetime.strptime(m.group(1), header_date_format)
+             yield (True, current_date)
+
+           m = header_change_line.match(line)
+           if m:
+             current_date = datetime.datetime.strptime(m.group(1), header_change_format)
              yield (True, current_date)
             
            m = message_line.match(line)
