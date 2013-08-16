@@ -16,6 +16,8 @@ header_change_format = "%a %b %d %Y"
 message_line = re.compile(r'(\d\d:\d\d) (<.[^>]+> .*)')
 message_date_format = "%H:%M"
 
+exclude_messages = re.compile(r'<.[^>]+> (JOIN|PART|QUIT)')
+
 
 def read_log(file): 
     """From a log file, generate an alternating stream of known timestamps and log messages.
@@ -44,7 +46,7 @@ def read_log(file):
              yield (True, current_date)
             
            m = message_line.match(line)
-           if m:
+           if m and not exclude_messages.match(m.group(2)):
              message_hour = datetime.datetime.combine(current_date.date(), 
                 datetime.datetime.strptime(m.group(1), message_date_format).time())
 
