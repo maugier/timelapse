@@ -1,5 +1,7 @@
+#!/usr/bin/env python3
 
 import datetime
+import irclib
 import re
 import sys
 
@@ -45,15 +47,9 @@ def interpolate(stream):
         Outputs a stream of tuples (index, value) where index will be a linear interpolation
         of the known preceding and following values in the stream. For instance, inputting
 
-          (True, 1)
-          (False, a)
-          (False, b)
-          (False, c)
-          (True, 4)
-          (False, d)
-          (False, e)
-          (True, 8)
-          (False, f)
+          (True, 1),(False, a),(False, b),(False, c),
+          (True, 4),(False, d),(False, e),
+          (True, 8),(False, f)
 
        Will generate
 
@@ -75,6 +71,16 @@ def interpolate(stream):
         else:
             values_buffer.append(v)
 
+def send_timed_stream(stream, client, handler):
+    (ts, msg) = next stream
+    def next_tick():
+        handler(msg)
+        send_timed_stream(stream, client, handler)
+        
+    client.execute_at(ts.timestamp(), next_tick, [])
+
+class TimeLapse(SingleServerIRCBot):
+    def __init__(self, server_list, nick="TimeLapse", channel="#timelapse", 
 
 if __name__ == "__main__":
     for i in interpolate(read_log(sys.argv[1])):
