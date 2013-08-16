@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
 import datetime
-import irclib
+import logging
 import re
 import sys
+from irc.bot import SingleServerIRCBot
 
 # --- Log opened Fri May 25 12:56:23 2012
 header_line = re.compile(r'--- Log opened (.*)')
@@ -22,8 +23,9 @@ def read_log(file):
     
     current_date = None
 
-    with open(file, 'r') as f:
-        for line in f:
+    with open(file, 'rb') as f:
+        for buf in f:
+           line = buf.decode('utf-8', 'replace')
            m = header_line.match(line)
            if m:
              current_date = datetime.datetime.strptime(m.group(1), header_date_format)
@@ -71,16 +73,41 @@ def interpolate(stream):
         else:
             values_buffer.append(v)
 
+def adjust(f, g):
+    for (i,v) in g:
+        yield (f(i), v)
+
 def send_timed_stream(stream, client, handler):
-    (ts, msg) = next stream
+    
+    # Find next event
+    while True:
+        (ts, msg) = next(stream)
+        if ts > datetime.datetime.now():
+            break
+
+    logging.debug("Next timelapse stamp at {0}".format(ts))
+
+    # Build the event function
     def next_tick():
         handler(msg)
         send_timed_stream(stream, client, handler)
         
-    client.execute_at(ts.timestamp(), next_tick, [])
+    # Schedule it
+    client.execute_at(ts, next_tick, [])
 
 class TimeLapse(SingleServerIRCBot):
-    def __init__(self, server_list, nick="TimeLapse", channel="#timelapse", 
+    def __init__(self, server_list, nick="TimeLapse", channel="#timelapse", replay_log="/dev/null", delay=datetime.timedelta(365), **params):
+        self.lapsed_channel = channel
+        self.lapsed = adjust(lambda x: x + delay, interpolate(read_log(replay_log)))
+        super().__init__(server_list, nick, "TimeLapse", **params)
+
+    def on_welcome(self, c, e):
+        c.join(self.lapsed_channel)
+        send_timed_stream(self.lapsed, self.connection, self.on_lapsed_message)
+
+    def on_lapsed_message(self, msg):
+        self.connection.privmsg(self.lapsed_channel, msg)
+
 
 if __name__ == "__main__":
     for i in interpolate(read_log(sys.argv[1])):
