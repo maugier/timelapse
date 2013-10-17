@@ -1,7 +1,7 @@
 import datetime
 import random
 import transform
-#import timelapse
+import timelapse
 
 def merge(s1, s2):
     try:
@@ -40,5 +40,5 @@ def sliding_stream(delay=20):
     while True:
         yield(now, random.choice(transform.all_transforms))
 
-#class Sliders(timelapse.TimeLapse):
-#   pass 
+class Sliders(timelapse.TimeLapse):
+   pass 
