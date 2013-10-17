@@ -1,4 +1,5 @@
 import datetime
+import logging
 import random
 import transform
 import timelapse
@@ -41,4 +42,18 @@ def sliding_stream(delay=20):
         yield(now, random.choice(transform.all_transforms))
 
 class Sliders(timelapse.TimeLapse):
-   pass 
+    def __init__(self, server_list, nick="Sliders", channel="#sliders", 
+        sliding_window = 60, **params):
+        super().__init__(server_list, nick=nick, channel=channel, **params)
+        self.lapsed = merge(self.lapsed, sliding_stream(sliding_window))
+
+
+    def on_lapsed_message(self, msg):
+        if isinstance(msg, transform.Transform):
+            self.sliders_transform = msg
+            self.connection.privmsg(self.lapsed_channel,
+                "Un portail s'ouvre vers un monde parallèle peuplé de "
+                + msg.name)
+        else:
+            super().on_lapsed_message(msg)
+
