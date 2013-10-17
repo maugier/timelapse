@@ -62,8 +62,24 @@ leet = replace_many({
     "o":"0",
     "b":"8"})
 
+double_vowels = replace_many({'a':'aa','e':'ee','i':'ii','o':'oo','u':'uu','y':'yy'})
 
-basic_transforms = [Transform("maléfiques", evil_twins),
+def suisses(s):
+    return "De dieu de dieu, {0} ou bien ?".format(double_vowels(s))
+
+def marseillais(s):
+    return "Putain, {0} con.".format(s)
+
+def yoda(s):
+    l = s.split()
+    l.reverse()
+    return " ".join(l)
+
+basic_transforms = [
+                  Transform("yodas", yoda),
+                  Transform("marseillais", marseillais),
+                  Transform("suisses", suisses),
+                  Transform("maléfiques", evil_twins),
                   Transform("l33ts", leet),
                   Transform("bruyants", lambda s: s.upper())]
 
