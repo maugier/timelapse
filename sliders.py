@@ -36,24 +36,27 @@ def merge(s1, s2):
                 return
         
 
-def sliding_stream(delay=20):
+def sliding_stream(delay_secs=20):
     ts = datetime.datetime.now()
+    delay = datetime.timedelta(0,delay_secs)
     while True:
-        yield(now, random.choice(transform.all_transforms))
+        yield(ts, random.choice(transform.all_transforms))
+        ts = ts + delay
 
 class Sliders(timelapse.TimeLapse):
     def __init__(self, server_list, nick="Sliders", channel="#sliders", 
         sliding_window = 60, **params):
         super().__init__(server_list, nick=nick, channel=channel, **params)
         self.lapsed = merge(self.lapsed, sliding_stream(sliding_window))
-
+        self.sliders_transform = random.choice(transform.all_transforms)
 
     def on_lapsed_message(self, msg):
+
         if isinstance(msg, transform.Transform):
             self.sliders_transform = msg
             self.connection.privmsg(self.lapsed_channel,
-                "Un portail s'ouvre vers un monde parallèle peuplé de "
+                "Un portail s'ouvre vers un monde parallèle peuplé de jumeaux "
                 + msg.name)
         else:
-            super().on_lapsed_message(msg)
+            super().on_lapsed_message(self.sliders_transform(msg))
 
