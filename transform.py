@@ -1,4 +1,7 @@
 
+all_transforms = {"Evil Twins": evil_twins,
+                  "L33ts": leet}
+
 def replace_many(words):
 	maxlen = max(len(x) for x in words)
 	def fun(s):
@@ -19,6 +22,9 @@ evil_twins = replace_many({
 	":)":":(",
 	":(":":)",
 	":))":":((",
+	":((":":))",
+	":>":":<",
+	":<":":>",
 	":')":":'(",
 	":]":":[",
 	":D","D:",
@@ -28,4 +34,8 @@ evil_twins = replace_many({
 
 leet = replace_many({
 	"e":"3",
-	"a":"4"})
+	"a":"4",
+	"s":"5",
+	"i","1",
+	"o","0",
+	"b","8"})
