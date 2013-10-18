@@ -24,7 +24,7 @@ def on_text(f):
         match = nick_pattern.match(s)
         if match:
             (nick,msg) = match.groups()
-            return "".join(nick, f(msg))
+            return "".join([nick, f(msg)])
         else:
             return f(s)
     return fun
