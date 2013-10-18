@@ -4,6 +4,7 @@ import random
 import transform
 import timelapse
 
+# merge two iterators producing sorted values
 def merge(s1, s2):
     try:
         x1 = next(s1)
@@ -44,7 +45,7 @@ def sliding_stream(delay_secs=20):
         ts = ts + delay
 
 class Sliders(timelapse.TimeLapse):
-    def __init__(self, server_list, nick="Sliders", channel="#sliders", 
+    def __init__(self, server_list, nick="Sliders", channel="#sliders", realname="Sliders",
         sliding_window = 60, **params):
         super().__init__(server_list, nick=nick, channel=channel, **params)
         self.lapsed = merge(self.lapsed, sliding_stream(sliding_window))

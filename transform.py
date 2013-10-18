@@ -17,7 +17,7 @@ class CombinedTransform(Transform):
             arg = f(arg)
         return arg
 
-nick_pattern = re.compile(r'^(<.*?>)(.*)') 
+nick_pattern = re.compile(r'^(<.*?>\s+)(.*)') 
 
 def on_text(f):
     def fun(s):
@@ -100,4 +100,4 @@ basic_transforms = [
                   Transform("l33ts", leet),
                   Transform("bruyants", lambda s: s.upper())]
 
-all_transforms = [CombinedTransform(*ts) for ts in powerset(basic_transforms)]
+all_transforms = [CombinedTransform(*ts) for ts in powerset(basic_transforms) if len(ts) < 3]

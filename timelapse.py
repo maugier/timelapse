@@ -111,10 +111,10 @@ def send_timed_stream(stream, client, handler):
     client.execute_at(ts, next_tick, [])
 
 class TimeLapse(SingleServerIRCBot):
-    def __init__(self, server_list, nick="TimeLapse", channel="#timelapse", replay_log="/dev/null", delay=datetime.timedelta(364), **params):
+    def __init__(self, server_list, nick="TimeLapse", realname = "TimeLapse", channel="#timelapse", replay_log="/dev/null", delay=datetime.timedelta(364), **params):
         self.lapsed_channel = channel
         self.lapsed = adjust(lambda x: x + delay, interpolate(read_log(replay_log)))
-        super().__init__(server_list, nick, "TimeLapse", **params)
+        super().__init__(server_list, nick, realname, **params)
 
     def on_welcome(self, c, e):
         c.join(self.lapsed_channel)
