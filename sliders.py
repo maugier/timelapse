@@ -56,7 +56,7 @@ class Sliders(timelapse.TimeLapse):
         if isinstance(msg, transform.Transform):
             self.sliders_transform = msg
             self.connection.privmsg(self.lapsed_channel,
-                "Un portail s'ouvre vers un monde parallèle peuplé de jumeaux "
+                "\x01ACTION s'ouvre vers un monde parallèle peuplé de jumeaux\x01"
                 + msg.name)
         else:
             super().on_lapsed_message(self.sliders_transform(msg))
