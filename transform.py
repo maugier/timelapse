@@ -1,3 +1,4 @@
+import re
 
 class Transform:
     def __init__(self,name,call):
@@ -15,6 +16,19 @@ class CombinedTransform(Transform):
         for f in self.subs:
             arg = f(arg)
         return arg
+
+nick_pattern = re.compile(r'^(<.*?>)(.*)') 
+
+def on_text(f):
+    def fun(s):
+        match = nick_pattern.match(s)
+        if match:
+            (nick,msg) = match.groups()
+            return "".join(nick, f(msg))
+        else:
+            return f(s)
+    return fun
+
 
 def replace_many(words):
     maxlen = max(len(x) for x in words)
@@ -64,12 +78,15 @@ leet = replace_many({
 
 double_vowels = replace_many({'a':'aa','e':'ee','i':'ii','o':'oo','u':'uu','y':'yy'})
 
+@on_text
 def suisses(s):
     return "De dieu de dieu, {0} ou bien ?".format(double_vowels(s))
 
+@on_text
 def marseillais(s):
     return "Putain, {0} con.".format(s)
 
+@on_text
 def yoda(s):
     l = s.split()
     l.reverse()
