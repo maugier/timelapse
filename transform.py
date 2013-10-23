@@ -92,11 +92,19 @@ def yoda(s):
     l.reverse()
     return " ".join(l)
 
+zozote = replace_many('j':'z', 'ch':'s')
+
+grossier = on_text(replace_many({"du":"du putain de", "de la": "de la saloperie de", "la":"la salope de", 
+                                 "le": "l'enculé de", "les": "les enculés de", "un":"un connard de",
+                                 "ce": "ce putain de", "cette": "cette chiure de", "une":"une grognasse de"}))
+
 basic_transforms = [
                   Transform("yodas", yoda),
                   Transform("marseillais", marseillais),
                   Transform("suisses", suisses),
+                  Transform("grossiers", grossier),
                   Transform("maléfiques", evil_twins),
+                  Transform("zozotants", zozote),
                   Transform("l33ts", leet),
                   Transform("bruyants", lambda s: s.upper())]
 
