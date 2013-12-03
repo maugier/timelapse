@@ -76,7 +76,8 @@ leet = replace_many({
     "o":"0",
     "b":"8"})
 
-double_vowels = replace_many({'a':'aa','e':'ee','i':'ii','o':'oo','u':'uu','y':'yy'})
+double_vowels = replace_many({'a':'aa','e':'ee','i':'ii','o':'oo','u':'uu','y':'yy',
+                              'A':'AA','E':'EE','I':'II','O':'OO','U':'UU','Y':'YY'})
 
 @on_text
 def suisses(s):
@@ -92,19 +93,22 @@ def yoda(s):
     l.reverse()
     return " ".join(l)
 
-zozote = replace_many('j':'z', 'ch':'s')
+zozote = replace_many({'j':'z', 'J':'Z', 'ch':'s', 's':'f', 'S':'F'})
 
-grossier = on_text(replace_many({"du":"du putain de", "de la": "de la saloperie de", "la":"la salope de", 
-                                 "le": "l'enculé de", "les": "les enculés de", "un":"un connard de",
-                                 "ce": "ce putain de", "cette": "cette chiure de", "une":"une grognasse de"}))
+grossier = on_text(replace_many({" du ":" du putain de ", " de la ": " de la saloperie de ", " la ":" la salope de ", 
+                                 " le ": " l'enculé de ", " les ": " les enculés de ", " un ":" un connard de ",
+                                 " ce ": " ce putain de ", " cette ": " cette chiure de ", " une ":" une grognasse de ",
+                                 " des " : " des merdes de ", " ma ": " ma pute de ", " mon ":" mon pédé de ",
+                                 " ton ": " ton trouduc de ", " ta ": " ta conasse de ", " son ":" son salaud de ",
+                                 " sa ": " sa truie de "}))
 
 basic_transforms = [
-                  Transform("yodas", yoda),
                   Transform("marseillais", marseillais),
                   Transform("suisses", suisses),
                   Transform("grossiers", grossier),
                   Transform("maléfiques", evil_twins),
                   Transform("zozotants", zozote),
+                  Transform("yodas", yoda),
                   Transform("l33ts", leet),
                   Transform("bruyants", lambda s: s.upper())]
 
