@@ -102,9 +102,15 @@ grossier = on_text(replace_many({" du ":" du putain de ", " de la ": " de la sal
                                  " ton ": " ton trouduc de ", " ta ": " ta conasse de ", " son ":" son salaud de ",
                                  " sa ": " sa truie de "}))
 
+allemands = on_text(replace_many({'v':'f', 'V':'F', 'j':'ch', 'J':'Ch', 
+	'ca': 'ka', 'co': 'ko', 'cu': 'ku', 'ci':'zi', 'ce':'ze',
+	'sa':'za', 'si':'zi', 'se':'ze', 'so':'zo', 'su':'zu', 'S': 'Z',
+	'!': 'ach !'}))
+
 basic_transforms = [
                   Transform("marseillais", marseillais),
                   Transform("suisses", suisses),
+		  Transform("allemands", allemands),
                   Transform("grossiers", grossier),
                   Transform("maléfiques", evil_twins),
                   Transform("zozotants", zozote),
