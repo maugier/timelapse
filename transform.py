@@ -83,9 +83,12 @@ double_vowels = replace_many({'a':'aa','e':'ee','i':'ii','o':'oo','u':'uu','y':'
 def suisses(s):
     return "De dieu de dieu, {0} ou bien ?".format(double_vowels(s))
 
+def inflate(s):
+    return re.sub(r"(\d+)", lambda m: m.group(1) + "0", s)
+
 @on_text
 def marseillais(s):
-    return "Putain, {0} con.".format(s)
+    return "Putain, {0} con.".format(inflate(s))
 
 @on_text
 def yoda(s):
