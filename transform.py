@@ -105,7 +105,7 @@ grossier = on_text(replace_many({" du ":" du putain de ", " de la ": " de la sal
 allemands = on_text(replace_many({'v':'f', 'V':'F', 'j':'ch', 'J':'Ch', 
 	'ca': 'ka', 'co': 'ko', 'cu': 'ku', 'ci':'zi', 'ce':'ze',
 	'sa':'za', 'si':'zi', 'se':'ze', 'so':'zo', 'su':'zu', 'S': 'Z',
-	'!': 'ach !'}))
+	'!': 'ach !', 'qu':'k', 'Qu':'K'}))
 
 basic_transforms = [
                   Transform("marseillais", marseillais),
